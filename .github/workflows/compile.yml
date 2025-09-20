@@ -1,0 +1,45 @@
+name: Compile Static Libraries
+
+on:
+    workflow_dispatch:
+    push:
+
+jobs:
+    compile:
+      if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[build]') }}
+      strategy:
+        matrix:
+          include:
+            - runner: ubuntu-24.04-arm
+              architecture: aarch64
+              abi: arm64-v8a
+              image: termux/termux-docker:aarch64
+            - runner: ubuntu-24.04
+              architecture: x86_64
+              abi: x86_64
+              image: termux/termux-docker:x86_64
+
+      runs-on: ${{ matrix.runner }}
+      container:
+        image: ${{ matrix.image }}
+        volumes: 
+          - /tmp/node20:/__e/node20
+
+      steps:
+        - name: Install dependencies
+          run: sudo apt install php clang binutils
+
+        - name: Checkout repository
+          uses: actions/checkout@main
+
+        - name: Compile files
+          run: php scripts/compile.php clang
+        
+        - name: Compile static libraries
+          run: ar r int/*.o ./plutostaticlibrary.a
+
+        - name: Upload libraries
+          uses: actions/upload-artifact@v4
+          with:
+            name: plutostaticlibrary-${{ matrix.abi }}.a
+            path: ./plutostaticlibrary.a
