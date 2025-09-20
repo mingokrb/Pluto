@@ -42,14 +42,19 @@ jobs:
             /entrypoint.sh bash -c "yes | pkg upgrade -y"
             chmod -R o+x ${PREFIX}/bin
             /entrypoint.sh pkg install -y php clang binutils
+            ln -sf ${PREFIX}/bin /__e/node20/bin
+
+        - name: Checkout repository
+          uses: actions/checkout@v4.2.2
+
+        - name: Reset permissions
+          run: chown -R 1000:1000 .
 
         - name: Compile files
-          run: |
-            pwd
-            php ./scripts/compile.php clang
+          run: php scripts/compile.php clang
 
         - name: Compile static libraries
-          run: ar r ./int/*.o ./plutostaticlibrary-${{ matrix.abi }}.a
+          run: ar r int/*.o ./plutostaticlibrary-${{ matrix.abi }}.a
 
         - name: Upload libraries
           uses: actions/upload-artifact@v4
