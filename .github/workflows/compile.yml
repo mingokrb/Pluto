@@ -22,24 +22,26 @@ jobs:
       runs-on: ${{ matrix.runner }}
       container:
         image: ${{ matrix.image }}
-        volumes: 
+        volumes:
           - /tmp/node20:/__e/node20
 
       steps:
         - name: Install dependencies
-          run: sudo apt install php clang binutils
+          run: |
+            apt install sudo
+            sudo apt install php clang binutils
 
         - name: Checkout repository
           uses: actions/checkout@main
 
         - name: Compile files
           run: php scripts/compile.php clang
-        
+
         - name: Compile static libraries
-          run: ar r int/*.o ./plutostaticlibrary.a
+          run: ar r int/*.o ./plutostaticlibrary-${{ matrix.abi }}.a
 
         - name: Upload libraries
           uses: actions/upload-artifact@v4
           with:
             name: plutostaticlibrary-${{ matrix.abi }}.a
-            path: ./plutostaticlibrary.a
+            path: ./plutostaticlibrary-${{ matrix.abi }}.a
