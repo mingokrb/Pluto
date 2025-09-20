@@ -42,7 +42,6 @@ jobs:
             /entrypoint.sh bash -c "yes | pkg upgrade -y"
             chmod -R o+x ${PREFIX}/bin
             /entrypoint.sh pkg install -y php clang binutils
-            ln -sf ${PREFIX}/bin /__e/node20/bin
 
         - name: Checkout repository
           uses: actions/checkout@main
