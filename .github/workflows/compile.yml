@@ -43,9 +43,6 @@ jobs:
             chmod -R o+x ${PREFIX}/bin
             /entrypoint.sh pkg install -y php clang binutils
 
-        - name: Checkout repository
-          uses: actions/checkout@main
-
         - name: Compile files
           run: php scripts/compile.php clang
 
