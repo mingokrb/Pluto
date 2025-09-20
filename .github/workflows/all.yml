@@ -1,8 +1,6 @@
 name: Builds
-on:
-  push:
-    branches: [ "main" ]
-  pull_request: {}
+on: workflow_dispatch
+
 jobs:
   ubuntu-24-04:
     runs-on: ubuntu-24.04
