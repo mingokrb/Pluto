@@ -44,10 +44,12 @@ jobs:
             /entrypoint.sh pkg install -y php clang binutils
 
         - name: Compile files
-          run: php scripts/compile.php clang
+          run: |
+            pwd
+            php ./scripts/compile.php clang
 
         - name: Compile static libraries
-          run: ar r int/*.o ./plutostaticlibrary-${{ matrix.abi }}.a
+          run: ar r ./int/*.o ./plutostaticlibrary-${{ matrix.abi }}.a
 
         - name: Upload libraries
           uses: actions/upload-artifact@v4
